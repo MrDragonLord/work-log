@@ -1,0 +1,145 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+	--font-heading: 'Segoe UI Variable Display', 'Segoe UI', system-ui, sans-serif;
+	--font-mono: 'Cascadia Mono', 'Cascadia Code', Consolas, monospace;
+	--font-sans: 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-background: var(--background);
+	--color-border: var(--border);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-destructive: var(--destructive);
+	--color-foreground: var(--foreground);
+	--color-input: var(--input);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-ring: var(--ring);
+	--color-running: var(--running);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-sidebar: var(--sidebar);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar-primary: var(--sidebar-primary);
+	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+	--color-sidebar-ring: var(--sidebar-ring);
+	--color-timer: var(--timer);
+	--radius-sm: calc(var(--radius) * 0.65);
+	--radius-md: calc(var(--radius) * 0.82);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) * 1.35);
+	--radius-2xl: calc(var(--radius) * 1.7);
+	--radius-3xl: calc(var(--radius) * 2.1);
+	--radius-4xl: calc(var(--radius) * 2.5);
+}
+
+:root {
+	--accent: #e9eefc;
+	--accent-foreground: #213b91;
+	--background: #f4f7f6;
+	--border: #dce5e1;
+	--card: #ffffff;
+	--card-foreground: #17201d;
+	--destructive: #c53e43;
+	--foreground: #17201d;
+	--input: #d5dfdb;
+	--muted: #e9efed;
+	--muted-foreground: #66736e;
+	--popover: #ffffff;
+	--popover-foreground: #17201d;
+	--primary: #365bd6;
+	--primary-foreground: #ffffff;
+	--radius: 0.75rem;
+	--ring: #6f8deb;
+	--running: #df852f;
+	--secondary: #e7eeeb;
+	--secondary-foreground: #27342f;
+	--sidebar: #edf2f0;
+	--sidebar-accent: #e1e9e6;
+	--sidebar-accent-foreground: #17201d;
+	--sidebar-border: #d6e0dc;
+	--sidebar-foreground: #26332e;
+	--sidebar-primary: #213b91;
+	--sidebar-primary-foreground: #f8faff;
+	--sidebar-ring: #6f8deb;
+	--timer: #2749b8;
+}
+
+.dark {
+	--accent: #202c4f;
+	--accent-foreground: #d8e1ff;
+	--background: #0e1513;
+	--border: #27322e;
+	--card: #151e1b;
+	--card-foreground: #eef4f1;
+	--destructive: #f08086;
+	--foreground: #eef4f1;
+	--input: #303d38;
+	--muted: #202b27;
+	--muted-foreground: #9aa8a2;
+	--popover: #19231f;
+	--popover-foreground: #eef4f1;
+	--primary: #86a0ff;
+	--primary-foreground: #101a3b;
+	--ring: #86a0ff;
+	--running: #f2a254;
+	--secondary: #222d29;
+	--secondary-foreground: #dfe8e4;
+	--sidebar: #111a17;
+	--sidebar-accent: #1d2824;
+	--sidebar-accent-foreground: #eef4f1;
+	--sidebar-border: #26312d;
+	--sidebar-foreground: #d6e0dc;
+	--sidebar-primary: #86a0ff;
+	--sidebar-primary-foreground: #101a3b;
+	--sidebar-ring: #86a0ff;
+	--timer: #aebdff;
+}
+
+@layer base {
+	* {
+		@apply border-border outline-ring/50;
+	}
+
+	html {
+		@apply bg-background font-sans;
+		text-rendering: optimizeLegibility;
+	}
+
+	body {
+		@apply min-w-80 bg-background text-foreground antialiased;
+		margin: 0;
+	}
+
+	button:not(:disabled),
+	[role='button']:not(:disabled) {
+		cursor: pointer;
+	}
+
+	::selection {
+		background: color-mix(in oklch, var(--primary), transparent 72%);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		scroll-behavior: auto !important;
+		transition-duration: 0.01ms !important;
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+	}
+}

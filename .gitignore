@@ -1,21 +1,45 @@
-# Logs
-logs
+# Logs and crash dumps
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+*.stackdump
 
-node_modules
-dist
-dist-ssr
+# Dependency and build artifacts
+node_modules/
+.pnpm-store/
+dist/
+dist-ssr/
+coverage/
+.nyc_output/
+.eslintcache
+*.tsbuildinfo
+
+# Local environment configuration
+.env
+.env.*
+!.env.example
+!.env.template
 *.local
+
+# Rust and Tauri generated artifacts
+src-tauri/target/
+src-tauri/gen/schemas/
+
+.agents/
+skills-lock.json
+AGENTS.md
+
+# Generated design assets
+src/shared/assets/*-chroma.png
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*

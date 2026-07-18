@@ -1,7 +1,70 @@
-# Tauri + React + Typescript
+# WorkLog
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+WorkLog — локальное desktop-приложение для учёта рабочего времени для Windows.
+Пользователь создаёт рабочие пространства, внутри них проекты, а внутри проектов —
+несколько параллельно работающих таймеров.
 
-## Recommended IDE Setup
+## Возможности
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+- полностью локальная работа без сервера и учётной записи;
+- рабочие пространства, вложенные проекты и записи времени;
+- несколько одновременно запущенных таймеров;
+- название, описание, дата и время начала каждой записи;
+- русский и английский интерфейс с автоопределением языка;
+- светлая и тёмная темы;
+- скрытие в системный трей без остановки таймеров.
+
+Данные хранятся в SQLite в каталоге приложения пользователя. Отчёты и облачная
+синхронизация в текущую версию не входят.
+
+## Стек
+
+- Tauri 2 и Rust;
+- React 19, TypeScript и Vite;
+- Tailwind CSS и shadcn/ui;
+- i18next для интерфейса на русском и английском;
+- Vitest и Testing Library;
+- SQLite через Rust-репозитории.
+
+## Требования
+
+- Windows 10 или Windows 11 (x64);
+- Node.js `24.11.1`;
+- Rust `1.96.0` с Windows MSVC toolchain — версия и компоненты автоматически
+  выбираются из `rust-toolchain.toml`;
+- Microsoft C++ Build Tools с workload **Desktop development with C++**;
+- WebView2 Runtime, входящий в актуальные Windows 10 и 11.
+
+## Разработка
+
+После клонирования выполните:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm dev:tauri
+```
+
+Использовался pnpm `11.1.3`, зафиксирован в `package.json`.
+Команда `--frozen-lockfile` гарантирует установку ровно тех зависимостей,
+которые зафиксированы в `pnpm-lock.yaml`. Не удаляйте и не добавляйте в
+`.gitignore` файлы `pnpm-lock.yaml` и `src-tauri/Cargo.lock`.
+
+Полная проверка перед отправкой изменений:
+
+```bash
+pnpm check
+```
+
+Отдельно доступны `pnpm check:frontend`, `pnpm check:rust`
+и `corepack pnpm format:check`. Production-сборка приложения выполняется
+командой `pnpm build:tauri`.
+
+## Архитектурные границы
+
+- `src/app` — композиция приложения, провайдеры и layout;
+- `src/features` — пользовательские возможности;
+- `src/shared` — UI-примитивы, локализация и общие утилиты;
+- `src-tauri/src/domain` — модели, ограничения и ошибки команд;
+- `src-tauri/src/storage` — SQLite, миграции и транзакционные репозитории;
+- `src-tauri/src/commands` — типизированная граница между React и Rust;
+- `src-tauri/src/tray.rs` — системный трей и жизненный цикл окна.
