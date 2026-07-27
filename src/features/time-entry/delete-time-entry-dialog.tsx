@@ -1,5 +1,4 @@
-import * as m from '@/paraglide/messages.js'
-import { useLocale } from '@/shared/i18n'
+import { m } from '@/paraglide/messages.js'
 
 import { type TimeEntry } from '@/shared/api'
 import {
@@ -28,7 +27,6 @@ export default function DeleteTimeEntryDialog({
 }: DeleteTimeEntryDialogProps) {
 	'use no memo'
 
-	useLocale()
 	return (
 		<AlertDialog onOpenChange={(isOpen) => !isOpen && !isDeleting && onCancel()} open>
 			<AlertDialogContent>

@@ -11,7 +11,7 @@ type WorkspacesPageProps = {
 	workspace: WorkspaceReference | null
 }
 
-export default function WorkspacesPage({
+function WorkspacesPage({
 	onProjectChange,
 	onWorkspaceChange,
 	project,
@@ -35,3 +35,5 @@ export default function WorkspacesPage({
 		<ProjectTimers onBack={() => onProjectChange(null)} project={project} workspace={workspace} />
 	)
 }
+
+export default WorkspacesPage

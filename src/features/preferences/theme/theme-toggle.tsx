@@ -1,6 +1,5 @@
 import { MoonIcon, SunIcon } from '@heroicons/react/24/outline'
-import * as m from '@/paraglide/messages.js'
-import { useLocale } from '@/shared/i18n'
+import { m } from '@/paraglide/messages.js'
 
 import { useTheme } from '@/features/preferences/theme'
 import { Button, Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui'
@@ -8,7 +7,6 @@ import { Button, Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui'
 export default function ThemeToggle() {
 	'use no memo'
 
-	useLocale()
 	const { setTheme, theme } = useTheme()
 	const nextTheme = theme === 'light' ? 'dark' : 'light'
 	const label =

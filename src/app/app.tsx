@@ -1,10 +1,11 @@
 import { Suspense, lazy, useEffect, useState } from 'react'
-import * as m from '@/paraglide/messages.js'
+import { m } from '@/paraglide/messages.js'
+import { getLocale } from '@/paraglide/runtime.js'
 
 import { type AppSection, AppShell } from '@/app/layout'
 import { OverviewPage } from '@/features/overview'
 import { type ProjectReference, type WorkspaceReference } from '@/shared/api'
-import { useLocale } from '@/shared/i18n'
+import { withLocale } from '@/shared/i18n'
 
 const WorkspacesPage = lazy(async () => {
 	const module = await import('@/features/workspaces')
@@ -23,13 +24,13 @@ function resolveInitialSection(): AppSection {
 		: 'overview'
 }
 
-export default function App() {
+function App() {
 	'use no memo'
 
 	const [activeSection, setActiveSection] = useState<AppSection>(resolveInitialSection)
 	const [project, setProject] = useState<ProjectReference | null>(null)
 	const [workspace, setWorkspace] = useState<WorkspaceReference | null>(null)
-	const locale = useLocale()
+	const locale = getLocale()
 
 	useEffect(() => {
 		sessionStorage.setItem(LANGUAGE_CHANGE_SECTION_KEY, activeSection)
@@ -72,3 +73,5 @@ export default function App() {
 		</AppShell>
 	)
 }
+
+export default withLocale(App)

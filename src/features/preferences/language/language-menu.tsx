@@ -1,10 +1,11 @@
 import { CheckIcon, LanguageIcon } from '@heroicons/react/24/outline'
 import { useEffect } from 'react'
 
-import * as m from '@/paraglide/messages.js'
+import { m } from '@/paraglide/messages.js'
+import { getLocale } from '@/paraglide/runtime.js'
 
 import { setTrayLocale } from '@/shared/api'
-import { type Locale, changeLocale, useLocale } from '@/shared/i18n'
+import { type Locale, changeLocale } from '@/shared/i18n'
 import {
 	Button,
 	DropdownMenu,
@@ -18,7 +19,7 @@ import {
 export default function LanguageMenu() {
 	'use no memo'
 
-	const activeLocale = useLocale()
+	const activeLocale = getLocale()
 	const localeOptions: ReadonlyArray<{ label: string; locale: Locale }> = [
 		{ label: m.preferencesLanguageEnglish(), locale: 'en' },
 		{ label: m.preferencesLanguageRussian(), locale: 'ru' },

@@ -1,8 +1,7 @@
 import { type UnlistenFn, listen } from '@tauri-apps/api/event'
 import { useMutation } from '@tanstack/react-query'
 import { type MouseEvent, useEffect, useState } from 'react'
-import * as m from '@/paraglide/messages.js'
-import { useLocale } from '@/shared/i18n'
+import { m } from '@/paraglide/messages.js'
 
 import {
 	EXIT_CONFIRMATION_REQUESTED_EVENT,
@@ -23,7 +22,6 @@ import {
 export default function ExitConfirmationDialog() {
 	'use no memo'
 
-	useLocale()
 	const [activeTimerCount, setActiveTimerCount] = useState<number | null>(null)
 	const confirmExitMutation = useMutation({ mutationFn: confirmApplicationExit })
 

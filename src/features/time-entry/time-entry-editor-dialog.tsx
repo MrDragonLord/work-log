@@ -3,10 +3,10 @@ import { format } from 'date-fns'
 import { enUS, ru } from 'date-fns/locale'
 import { type FormEvent, useState } from 'react'
 
-import * as m from '@/paraglide/messages.js'
+import { m } from '@/paraglide/messages.js'
+import { getLocale } from '@/paraglide/runtime.js'
 
 import { type TimeEntry, type UpdateTimeEntryInput } from '@/shared/api'
-import { useLocale } from '@/shared/i18n'
 import { combineLocalDateAndTime, toTimeInputValue } from '@/shared/lib'
 import {
 	Button,
@@ -38,7 +38,7 @@ export default function TimeEntryEditorDialog({
 }: TimeEntryEditorDialogProps) {
 	'use no memo'
 
-	const locale = useLocale()
+	const locale = getLocale()
 	const [isCalendarOpen, setCalendarOpen] = useState(false)
 	const [isTimeInvalid, setTimeInvalid] = useState(false)
 	const [description, setDescription] = useState(entry.description ?? '')
@@ -99,7 +99,7 @@ export default function TimeEntryEditorDialog({
 								<PopoverTrigger asChild>
 									<Button
 										aria-invalid={isTimeInvalid || undefined}
-										className="mt-2 w-full justify-start font-normal"
+										className="mt-2 h-10 w-full justify-start bg-background px-3 font-normal shadow-xs dark:border-border dark:bg-background"
 										variant="outline"
 									>
 										<CalendarDaysIcon aria-hidden="true" data-icon="inline-start" />

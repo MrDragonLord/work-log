@@ -9,8 +9,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { type FormEvent, useState } from 'react'
-import * as m from '@/paraglide/messages.js'
-import { useLocale } from '@/shared/i18n'
+import { m } from '@/paraglide/messages.js'
 
 import {
 	type Project,
@@ -22,6 +21,7 @@ import {
 	listProjects,
 	updateProject,
 } from '@/shared/api'
+import { useLocale } from '@/shared/i18n'
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -79,7 +79,6 @@ function ProjectFormFields({
 }: ProjectFormFieldsProps) {
 	'use no memo'
 
-	useLocale()
 	return (
 		<div className={className}>
 			<label className="block text-sm font-medium" htmlFor={nameId}>
@@ -110,7 +109,6 @@ function ProjectFormFields({
 function ProjectEditorDialog({ isSaving, onClose, onSave, project }: ProjectEditorDialogProps) {
 	'use no memo'
 
-	useLocale()
 	const [description, setDescription] = useState(project.description ?? '')
 	const [name, setName] = useState(project.name)
 
@@ -165,7 +163,6 @@ function DeleteProjectDialog({
 }: DeleteProjectDialogProps) {
 	'use no memo'
 
-	useLocale()
 	return (
 		<AlertDialog onOpenChange={(isOpen) => !isOpen && !isDeleting && onCancel()} open>
 			<AlertDialogContent>
@@ -194,6 +191,7 @@ export default function WorkspaceProjects({ onBack, onOpen, workspace }: Workspa
 	'use no memo'
 
 	useLocale()
+
 	const queryClient = useQueryClient()
 	const [description, setDescription] = useState('')
 	const [deletingProject, setDeletingProject] = useState<Project | null>(null)

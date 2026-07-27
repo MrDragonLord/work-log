@@ -4,7 +4,7 @@ import { format } from 'date-fns'
 import { enUS, ru } from 'date-fns/locale'
 import { type FormEvent, useState } from 'react'
 
-import * as m from '@/paraglide/messages.js'
+import { m } from '@/paraglide/messages.js'
 
 import { TimeEntryActions, useNow } from '@/features/time-entry'
 import {
@@ -152,7 +152,7 @@ export default function ProjectTimers({ onBack, project, workspace }: ProjectTim
 								<PopoverTrigger asChild>
 									<Button
 										aria-invalid={isStartInvalid || undefined}
-										className="mt-2 w-full justify-start font-normal"
+										className="mt-2 h-10 w-full justify-start bg-background px-3 font-normal shadow-xs dark:border-border dark:bg-background"
 										variant="outline"
 									>
 										<CalendarDaysIcon aria-hidden="true" data-icon="inline-start" />

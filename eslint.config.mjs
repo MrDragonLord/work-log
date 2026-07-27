@@ -47,7 +47,10 @@ export default tseslint.config(
 			'prefer-const': 'error',
 			'react/prop-types': 'off',
 			'react/self-closing-comp': 'warn',
-			'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+			'react-refresh/only-export-components': [
+				'warn',
+				{ allowConstantExport: true, extraHOCs: ['withLocale'] },
+			],
 			'sort-imports': [
 				'error',
 				{

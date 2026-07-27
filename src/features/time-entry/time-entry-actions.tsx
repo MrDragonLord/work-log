@@ -7,8 +7,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import * as m from '@/paraglide/messages.js'
-import { useLocale } from '@/shared/i18n'
+import { m } from '@/paraglide/messages.js'
 
 import {
 	type TimeEntry,
@@ -37,7 +36,6 @@ type TimeEntryActionsProps = {
 export default function TimeEntryActions({ entry, size = 'icon-sm' }: TimeEntryActionsProps) {
 	'use no memo'
 
-	useLocale()
 	const queryClient = useQueryClient()
 	const [isDeleting, setDeleting] = useState(false)
 	const [isEditing, setEditing] = useState(false)

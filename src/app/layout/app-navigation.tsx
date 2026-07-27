@@ -1,6 +1,5 @@
 import { BuildingOffice2Icon, Squares2X2Icon } from '@heroicons/react/24/outline'
-import * as m from '@/paraglide/messages.js'
-import { useLocale } from '@/shared/i18n'
+import { m } from '@/paraglide/messages.js'
 
 import { WorklogIcon } from '@/shared/assets'
 import { cn } from '@/shared/lib'
@@ -18,7 +17,6 @@ type AppNavigationProps = {
 export function Brand() {
 	'use no memo'
 
-	useLocale()
 
 	return (
 		<div className="flex min-w-0 items-center gap-3">
@@ -45,7 +43,6 @@ export function Brand() {
 export default function AppNavigation({ activeSection, onNavigate }: AppNavigationProps) {
 	'use no memo'
 
-	useLocale()
 	const navigationItems = [
 		{
 			icon: Squares2X2Icon,

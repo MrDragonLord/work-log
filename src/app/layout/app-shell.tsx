@@ -1,7 +1,6 @@
 import { Bars3Icon } from '@heroicons/react/24/outline'
 import { type ReactNode, useState } from 'react'
-import * as m from '@/paraglide/messages.js'
-import { useLocale } from '@/shared/i18n'
+import { m } from '@/paraglide/messages.js'
 
 import { LanguageMenu } from '@/features/preferences/language'
 import { ThemeToggle } from '@/features/preferences/theme'
@@ -30,7 +29,6 @@ type AppShellProps = {
 export default function AppShell({ activeSection, children, locale, onNavigate }: AppShellProps) {
 	'use no memo'
 
-	useLocale()
 	const [isNavigationOpen, setNavigationOpen] = useState(false)
 
 	function navigate(section: AppSection): void {

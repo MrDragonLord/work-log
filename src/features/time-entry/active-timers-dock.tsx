@@ -1,8 +1,7 @@
 import { SignalIcon, StopIcon } from '@heroicons/react/24/outline'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import * as m from '@/paraglide/messages.js'
-import { useLocale } from '@/shared/i18n'
+import { m } from '@/paraglide/messages.js'
 
 import { WORKLOG_QUERY_KEYS, listActiveTimeEntries, stopTimeEntry } from '@/shared/api'
 import { formatDuration } from '@/shared/lib'
@@ -16,7 +15,6 @@ const FLOATING_BUTTON_CLASS =
 export default function ActiveTimersDock() {
 	'use no memo'
 
-	useLocale()
 	const queryClient = useQueryClient()
 	const [isOpen, setOpen] = useState(false)
 	const activeTimersQuery = useQuery({

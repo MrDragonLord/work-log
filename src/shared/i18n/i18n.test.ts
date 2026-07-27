@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import * as m from '@/paraglide/messages.js'
+import { m } from '@/paraglide/messages.js'
 
 import {
 	changeLocale,

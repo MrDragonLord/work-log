@@ -8,8 +8,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { type FormEvent, useState } from 'react'
-import * as m from '@/paraglide/messages.js'
-import { useLocale } from '@/shared/i18n'
+import { m } from '@/paraglide/messages.js'
 
 import {
 	WORKLOG_QUERY_KEYS,
@@ -19,6 +18,7 @@ import {
 	listWorkspaces,
 	updateWorkspace,
 } from '@/shared/api'
+import { useLocale } from '@/shared/i18n'
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -60,7 +60,6 @@ function WorkspaceEditorDialog({
 }: WorkspaceEditorDialogProps) {
 	'use no memo'
 
-	useLocale()
 	const [name, setName] = useState(workspace.name)
 
 	function handleSubmit(event: FormEvent<HTMLFormElement>): void {
@@ -117,7 +116,6 @@ function DeleteWorkspaceDialog({
 }: DeleteWorkspaceDialogProps) {
 	'use no memo'
 
-	useLocale()
 	return (
 		<AlertDialog onOpenChange={(isOpen) => !isOpen && !isDeleting && onCancel()} open>
 			<AlertDialogContent>
@@ -146,6 +144,7 @@ export default function WorkspaceList({ onOpen }: WorkspaceListProps) {
 	'use no memo'
 
 	useLocale()
+
 	const queryClient = useQueryClient()
 	const [name, setName] = useState('')
 	const [deletingWorkspace, setDeletingWorkspace] = useState<Workspace | null>(null)

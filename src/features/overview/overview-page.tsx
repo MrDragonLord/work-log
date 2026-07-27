@@ -1,7 +1,8 @@
 import { ArrowTopRightOnSquareIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { useQuery } from '@tanstack/react-query'
 
-import * as m from '@/paraglide/messages.js'
+import { m } from '@/paraglide/messages.js'
+import { getLocale } from '@/paraglide/runtime.js'
 
 import { TimeEntryActions, useNow } from '@/features/time-entry'
 import {
@@ -11,7 +12,6 @@ import {
 	type WorkspaceReference,
 	listTimeEntriesBetween,
 } from '@/shared/api'
-import { useLocale } from '@/shared/i18n'
 import {
 	formatDuration,
 	formatDurationMilliseconds,
@@ -44,7 +44,7 @@ function getWorkspaceReference(entry: TimeEntry): WorkspaceReference {
 export default function OverviewPage({ onOpenProject }: OverviewPageProps) {
 	'use no memo'
 
-	const locale = useLocale()
+	const locale = getLocale()
 	const entriesQuery = useQuery({
 		queryFn: () => listTimeEntriesBetween(DAY_RANGE.start, DAY_RANGE.end),
 		queryKey: WORKLOG_QUERY_KEYS.timeEntries(DAY_RANGE.start, DAY_RANGE.end),
