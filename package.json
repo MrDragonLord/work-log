@@ -20,6 +20,7 @@
 		"check:rust": "cargo fmt --manifest-path src-tauri/Cargo.toml -- --check && cargo clippy --manifest-path src-tauri/Cargo.toml -- -D warnings && cargo test --manifest-path src-tauri/Cargo.toml",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
+		"prelint": "pnpm i18n:compile",
 		"lint": "eslint \"src/**/*.{ts,tsx}\" vite.config.ts vitest.config.ts",
 		"lint:fix": "pnpm lint --fix",
 		"preview": "vite preview",
