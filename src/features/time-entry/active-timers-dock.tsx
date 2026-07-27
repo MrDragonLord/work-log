@@ -1,7 +1,8 @@
 import { SignalIcon, StopIcon } from '@heroicons/react/24/outline'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import * as m from '@/paraglide/messages.js'
+import { useLocale } from '@/shared/i18n'
 
 import { WORKLOG_QUERY_KEYS, listActiveTimeEntries, stopTimeEntry } from '@/shared/api'
 import { formatDuration } from '@/shared/lib'
@@ -13,7 +14,9 @@ const FLOATING_BUTTON_CLASS =
 	'fixed right-3 bottom-3 z-30 size-11 rounded-full border-running/30 bg-card text-running shadow-[0_18px_42px_-20px_color-mix(in_oklch,var(--running),transparent_36%)] hover:border-running/55 hover:bg-card sm:right-7 sm:bottom-7 sm:size-14'
 
 export default function ActiveTimersDock() {
-	const { t } = useTranslation()
+	'use no memo'
+
+	useLocale()
 	const queryClient = useQueryClient()
 	const [isOpen, setOpen] = useState(false)
 	const activeTimersQuery = useQuery({
@@ -41,7 +44,7 @@ export default function ActiveTimersDock() {
 			<Button
 				aria-expanded={isOpen}
 				aria-haspopup="dialog"
-				aria-label={t('runningTimers.open', { count: timers.length })}
+				aria-label={m.runningTimersOpen({ count: timers.length })}
 				className={FLOATING_BUTTON_CLASS}
 				data-slot="active-timers-dock"
 				onClick={() => setOpen(true)}
@@ -68,7 +71,7 @@ export default function ActiveTimersDock() {
 			<Sheet onOpenChange={setOpen} open={isOpen}>
 				<SheetContent
 					className="w-[min(27rem,calc(100vw-2rem))] gap-0 p-0 sm:max-w-none"
-					closeLabel={t('common.close')}
+					closeLabel={m.commonClose()}
 					side="right"
 				>
 					<SheetHeader className="border-b px-5 py-5 pr-14 text-left">
@@ -81,16 +84,18 @@ export default function ActiveTimersDock() {
 							</div>
 							<div>
 								<p className="text-[0.68rem] font-semibold tracking-[0.16em] text-running uppercase">
-									{t('runningTimers.eyebrow')}
+									{m.runningTimersEyebrow()}
 								</p>
 								<SheetTitle className="mt-1">
 									{timers.length === 0
-										? t('runningTimers.none')
-										: t('runningTimers.count', { count: timers.length })}
+										? m.runningTimersNone()
+										: m.runningTimersCount({ count: timers.length })}
 								</SheetTitle>
 							</div>
 						</div>
-						<SheetDescription>{t('runningTimers.description')}</SheetDescription>
+						<SheetDescription>
+							{m.runningTimersDescription()}
+						</SheetDescription>
 					</SheetHeader>
 
 					<div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-4">
@@ -112,7 +117,7 @@ export default function ActiveTimersDock() {
 									{formatDuration(timer.elapsedMilliseconds, timer.runningSince, now)}
 								</time>
 								<Button
-									aria-label={t('runningTimers.stopNamed', { title: timer.title })}
+									aria-label={m.runningTimersStopNamed({ title: timer.title })}
 									disabled={stopTimerMutation.isPending && stopTimerMutation.variables === timer.id}
 									onClick={() => stopTimerMutation.mutate(timer.id)}
 									size="icon"
@@ -125,7 +130,7 @@ export default function ActiveTimersDock() {
 
 						{error ? (
 							<p className="text-sm text-destructive" role="alert">
-								{t('common.error')}
+								{m.commonError()}
 							</p>
 						) : null}
 					</div>

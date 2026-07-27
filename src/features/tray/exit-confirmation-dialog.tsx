@@ -1,7 +1,8 @@
 import { type UnlistenFn, listen } from '@tauri-apps/api/event'
 import { useMutation } from '@tanstack/react-query'
 import { type MouseEvent, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import * as m from '@/paraglide/messages.js'
+import { useLocale } from '@/shared/i18n'
 
 import {
 	EXIT_CONFIRMATION_REQUESTED_EVENT,
@@ -20,7 +21,9 @@ import {
 } from '@/shared/ui'
 
 export default function ExitConfirmationDialog() {
-	const { t } = useTranslation()
+	'use no memo'
+
+	useLocale()
 	const [activeTimerCount, setActiveTimerCount] = useState<number | null>(null)
 	const confirmExitMutation = useMutation({ mutationFn: confirmApplicationExit })
 
@@ -28,14 +31,11 @@ export default function ExitConfirmationDialog() {
 		let isDisposed = false
 		let unlisten: UnlistenFn | undefined
 
-		void listen<ExitConfirmationRequested>(
-			EXIT_CONFIRMATION_REQUESTED_EVENT,
-			({ payload }) => {
-				if (payload.activeTimerCount > 0) {
-					setActiveTimerCount(payload.activeTimerCount)
-				}
-			},
-		).then((nextUnlisten) => {
+		void listen<ExitConfirmationRequested>(EXIT_CONFIRMATION_REQUESTED_EVENT, ({ payload }) => {
+			if (payload.activeTimerCount > 0) {
+				setActiveTimerCount(payload.activeTimerCount)
+			}
+		}).then((nextUnlisten) => {
 			if (isDisposed) {
 				nextUnlisten()
 				return
@@ -66,24 +66,26 @@ export default function ExitConfirmationDialog() {
 		>
 			<AlertDialogContent>
 				<AlertDialogHeader>
-					<AlertDialogTitle>{t('actions.exitApplication')}</AlertDialogTitle>
+					<AlertDialogTitle>
+						{m.actionsExitApplication()}
+					</AlertDialogTitle>
 					<AlertDialogDescription>
-						{t('actions.exitApplicationDescription', { count: activeTimerCount ?? 0 })}
+						{m.actionsExitApplicationDescription({ count: activeTimerCount ?? 0 })}
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				{confirmExitMutation.isError ? (
 					<p className="text-sm text-destructive" role="alert">
-						{t('actions.exitApplicationError')}
+						{m.actionsExitApplicationError()}
 					</p>
 				) : null}
 				<AlertDialogFooter>
 					<AlertDialogCancel disabled={confirmExitMutation.isPending} onClick={cancelExit}>
-						{t('actions.cancel')}
+						{m.actionsCancel()}
 					</AlertDialogCancel>
 					<AlertDialogAction disabled={confirmExitMutation.isPending} onClick={confirmExit}>
 						{confirmExitMutation.isPending
-							? t('common.saving')
-							: t('actions.exitAndStopTimers')}
+							? m.commonSaving()
+							: m.actionsExitAndStopTimers()}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>

@@ -22,14 +22,14 @@ WorkLog — локальное desktop-приложение для учёта р
 - Tauri 2 и Rust;
 - React 19, TypeScript и Vite;
 - Tailwind CSS и shadcn/ui;
-- i18next для интерфейса на русском и английском;
+- Paraglide JS для типизированного интерфейса на русском и английском;
 - Vitest и Testing Library;
 - SQLite через Rust-репозитории.
 
 ## Требования
 
 - Windows 10 или Windows 11 (x64);
-- Node.js `24.11.1`;
+- Node.js `24`;
 - Rust `1.96.0` с Windows MSVC toolchain — версия и компоненты автоматически
   выбираются из `rust-toolchain.toml`;
 - Microsoft C++ Build Tools с workload **Desktop development with C++**;
@@ -58,6 +58,10 @@ pnpm check
 Отдельно доступны `pnpm check:frontend`, `pnpm check:rust`
 и `corepack pnpm format:check`. Production-сборка приложения выполняется
 командой `pnpm build:tauri`.
+
+Исходные переводы находятся в `messages/en.json` и `messages/ru.json`. Каталог
+`src/paraglide` генерируется автоматически перед тестами и сборкой; изменять его
+вручную не нужно.
 
 ## Архитектурные границы
 

@@ -1,20 +1,39 @@
-import { Suspense, lazy, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Suspense, lazy, useEffect, useState } from 'react'
+import * as m from '@/paraglide/messages.js'
 
 import { type AppSection, AppShell } from '@/app/layout'
 import { OverviewPage } from '@/features/overview'
 import { type ProjectReference, type WorkspaceReference } from '@/shared/api'
+import { useLocale } from '@/shared/i18n'
 
 const WorkspacesPage = lazy(async () => {
 	const module = await import('@/features/workspaces')
 	return { default: module.WorkspacesPage }
 })
 
+const LANGUAGE_CHANGE_SECTION_KEY = 'worklog.languageChange.section'
+
+function resolveInitialSection(): AppSection {
+	if (typeof sessionStorage === 'undefined') {
+		return 'overview'
+	}
+
+	return sessionStorage.getItem(LANGUAGE_CHANGE_SECTION_KEY) === 'workspaces'
+		? 'workspaces'
+		: 'overview'
+}
+
 export default function App() {
-	const [activeSection, setActiveSection] = useState<AppSection>('overview')
+	'use no memo'
+
+	const [activeSection, setActiveSection] = useState<AppSection>(resolveInitialSection)
 	const [project, setProject] = useState<ProjectReference | null>(null)
 	const [workspace, setWorkspace] = useState<WorkspaceReference | null>(null)
-	const { t } = useTranslation()
+	const locale = useLocale()
+
+	useEffect(() => {
+		sessionStorage.setItem(LANGUAGE_CHANGE_SECTION_KEY, activeSection)
+	}, [activeSection])
 
 	function navigate(section: AppSection): void {
 		setActiveSection(section)
@@ -31,11 +50,17 @@ export default function App() {
 	}
 
 	return (
-		<AppShell activeSection={activeSection} onNavigate={navigate}>
+		<AppShell activeSection={activeSection} locale={locale} onNavigate={navigate}>
 			{activeSection === 'overview' ? (
 				<OverviewPage onOpenProject={openProject} />
 			) : (
-				<Suspense fallback={<p className="text-sm text-muted-foreground">{t('common.loading')}</p>}>
+				<Suspense
+					fallback={
+						<p className="text-sm text-muted-foreground">
+							{m.commonLoading()}
+						</p>
+					}
+				>
 					<WorkspacesPage
 						onProjectChange={setProject}
 						onWorkspaceChange={setWorkspace}

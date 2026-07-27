@@ -2,9 +2,11 @@ import { CalendarDaysIcon } from '@heroicons/react/24/outline'
 import { format } from 'date-fns'
 import { enUS, ru } from 'date-fns/locale'
 import { type FormEvent, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+
+import * as m from '@/paraglide/messages.js'
 
 import { type TimeEntry, type UpdateTimeEntryInput } from '@/shared/api'
+import { useLocale } from '@/shared/i18n'
 import { combineLocalDateAndTime, toTimeInputValue } from '@/shared/lib'
 import {
 	Button,
@@ -34,7 +36,9 @@ export default function TimeEntryEditorDialog({
 	onClose,
 	onSave,
 }: TimeEntryEditorDialogProps) {
-	const { i18n, t } = useTranslation()
+	'use no memo'
+
+	const locale = useLocale()
 	const [isCalendarOpen, setCalendarOpen] = useState(false)
 	const [isTimeInvalid, setTimeInvalid] = useState(false)
 	const [description, setDescription] = useState(entry.description ?? '')
@@ -42,7 +46,7 @@ export default function TimeEntryEditorDialog({
 	const [startTime, setStartTime] = useState(() => toTimeInputValue(new Date(entry.startedAt)))
 	const [title, setTitle] = useState(entry.title)
 	const currentDate = new Date()
-	const calendarLocale = (i18n.resolvedLanguage ?? i18n.language).startsWith('ru') ? ru : enUS
+	const calendarLocale = locale === 'ru' ? ru : enUS
 	const isToday = startDate.toDateString() === currentDate.toDateString()
 
 	function handleSubmit(event: FormEvent<HTMLFormElement>): void {
@@ -62,13 +66,13 @@ export default function TimeEntryEditorDialog({
 
 	return (
 		<Dialog onOpenChange={(isOpen) => !isOpen && onClose()} open>
-			<DialogContent closeLabel={t('common.close')}>
+			<DialogContent closeLabel={m.commonClose()}>
 				<DialogHeader>
-					<DialogTitle>{t('actions.editTimeEntry')}</DialogTitle>
+					<DialogTitle>{m.actionsEditTimeEntry()}</DialogTitle>
 				</DialogHeader>
 				<form onSubmit={handleSubmit}>
 					<label className="block text-sm font-medium" htmlFor="edit-timer-title">
-						{t('timerForm.name')}
+						{m.timerFormName()}
 					</label>
 					<Input
 						className="mt-2"
@@ -79,7 +83,7 @@ export default function TimeEntryEditorDialog({
 						value={title}
 					/>
 					<label className="mt-4 block text-sm font-medium" htmlFor="edit-timer-description">
-						{t('timerForm.description')}
+						{m.timerFormDescription()}
 					</label>
 					<Textarea
 						className="mt-2"
@@ -90,7 +94,7 @@ export default function TimeEntryEditorDialog({
 					/>
 					<div className="mt-4 grid gap-3 sm:grid-cols-[minmax(0,1fr)_7.5rem]">
 						<div>
-							<p className="text-sm font-medium">{t('timerForm.date')}</p>
+							<p className="text-sm font-medium">{m.timerFormDate()}</p>
 							<Popover onOpenChange={setCalendarOpen} open={isCalendarOpen}>
 								<PopoverTrigger asChild>
 									<Button
@@ -122,11 +126,11 @@ export default function TimeEntryEditorDialog({
 						</div>
 						<div>
 							<label className="block text-sm font-medium" htmlFor="edit-timer-start-time">
-								{t('timerForm.time')}
+								{m.timerFormTime()}
 							</label>
 							<Input
 								aria-invalid={isTimeInvalid || undefined}
-								className="mt-2"
+								className="mt-2 appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
 								id="edit-timer-start-time"
 								max={isToday ? toTimeInputValue(currentDate) : undefined}
 								onChange={(event) => {
@@ -135,21 +139,22 @@ export default function TimeEntryEditorDialog({
 								}}
 								required
 								type="time"
+								step="1"
 								value={startTime}
 							/>
 						</div>
 					</div>
 					{isTimeInvalid ? (
 						<p className="mt-3 text-sm text-destructive" role="alert">
-							{t('timerForm.invalidRange')}
+							{m.timerFormInvalidRange()}
 						</p>
 					) : null}
 					<DialogFooter className="mt-5">
 						<Button onClick={onClose} type="button" variant="outline">
-							{t('actions.cancel')}
+							{m.actionsCancel()}
 						</Button>
 						<Button disabled={isSaving} type="submit">
-							{isSaving ? t('common.saving') : t('actions.save')}
+							{isSaving ? m.commonSaving() : m.actionsSave()}
 						</Button>
 					</DialogFooter>
 				</form>

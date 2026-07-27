@@ -1,4 +1,5 @@
-import { useTranslation } from 'react-i18next'
+import * as m from '@/paraglide/messages.js'
+import { useLocale } from '@/shared/i18n'
 
 import { type TimeEntry } from '@/shared/api'
 import {
@@ -25,21 +26,26 @@ export default function DeleteTimeEntryDialog({
 	onCancel,
 	onConfirm,
 }: DeleteTimeEntryDialogProps) {
-	const { t } = useTranslation()
+	'use no memo'
 
+	useLocale()
 	return (
 		<AlertDialog onOpenChange={(isOpen) => !isOpen && !isDeleting && onCancel()} open>
 			<AlertDialogContent>
 				<AlertDialogHeader>
-					<AlertDialogTitle>{t('actions.deleteTimeEntry')}</AlertDialogTitle>
+					<AlertDialogTitle>
+						{m.actionsDeleteTimeEntry()}
+					</AlertDialogTitle>
 					<AlertDialogDescription>
-						{t('actions.deleteTimeEntryDescription', { title: entry.title })}
+						{m.actionsDeleteTimeEntryDescription({ title: entry.title })}
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
-					<AlertDialogCancel>{t('actions.cancel')}</AlertDialogCancel>
+					<AlertDialogCancel>{m.actionsCancel()}</AlertDialogCancel>
 					<AlertDialogAction disabled={isDeleting} onClick={onConfirm}>
-						{isDeleting ? t('common.saving') : t('actions.delete')}
+						{isDeleting
+							? m.commonSaving()
+							: m.actionsDelete()}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>

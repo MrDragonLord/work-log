@@ -7,7 +7,7 @@ import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-	{ ignores: ['coverage', 'dist', 'src-tauri/target'] },
+	{ ignores: ['coverage', 'dist', 'src/paraglide', 'src-tauri/target'] },
 	eslint.configs.recommended,
 	...tseslint.configs.recommendedTypeChecked,
 	{

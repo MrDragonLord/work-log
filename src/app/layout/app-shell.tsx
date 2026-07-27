@@ -1,6 +1,7 @@
 import { Bars3Icon } from '@heroicons/react/24/outline'
 import { type ReactNode, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import * as m from '@/paraglide/messages.js'
+import { useLocale } from '@/shared/i18n'
 
 import { LanguageMenu } from '@/features/preferences/language'
 import { ThemeToggle } from '@/features/preferences/theme'
@@ -22,12 +23,15 @@ import AppNavigation, { type AppSection, Brand } from './app-navigation'
 type AppShellProps = {
 	activeSection: AppSection
 	children: ReactNode
+	locale: string
 	onNavigate: (section: AppSection) => void
 }
 
-export default function AppShell({ activeSection, children, onNavigate }: AppShellProps) {
+export default function AppShell({ activeSection, children, locale, onNavigate }: AppShellProps) {
+	'use no memo'
+
+	useLocale()
 	const [isNavigationOpen, setNavigationOpen] = useState(false)
-	const { t } = useTranslation()
 
 	function navigate(section: AppSection): void {
 		onNavigate(section)
@@ -35,7 +39,7 @@ export default function AppShell({ activeSection, children, onNavigate }: AppShe
 	}
 
 	return (
-		<div className="min-h-svh bg-background text-foreground">
+		<div className="min-h-svh bg-background text-foreground" data-locale={locale}>
 			<aside className="fixed inset-y-0 left-0 z-20 hidden w-64 border-r bg-sidebar px-4 py-5 md:flex md:flex-col">
 				<div className="px-1">
 					<Brand />
@@ -49,7 +53,7 @@ export default function AppShell({ activeSection, children, onNavigate }: AppShe
 					<Sheet onOpenChange={setNavigationOpen} open={isNavigationOpen}>
 						<SheetTrigger asChild>
 							<Button
-								aria-label={t('common.openNavigation')}
+								aria-label={m.commonOpenNavigation()}
 								className="mr-2 md:hidden"
 								size="icon"
 								variant="ghost"
@@ -59,7 +63,7 @@ export default function AppShell({ activeSection, children, onNavigate }: AppShe
 						</SheetTrigger>
 						<SheetContent
 							className="w-[min(20rem,86vw)] bg-sidebar p-0"
-							closeLabel={t('common.close')}
+							closeLabel={m.commonClose()}
 							side="left"
 						>
 							<SheetHeader className="border-b px-5 py-5 pr-14 text-left">
@@ -68,7 +72,9 @@ export default function AppShell({ activeSection, children, onNavigate }: AppShe
 										<Brand />
 									</div>
 								</SheetTitle>
-								<SheetDescription className="sr-only">{t('navigation.label')}</SheetDescription>
+								<SheetDescription className="sr-only">
+									{m.navigationLabel()}
+								</SheetDescription>
 							</SheetHeader>
 							<div className="p-4">
 								<AppNavigation activeSection={activeSection} onNavigate={navigate} />

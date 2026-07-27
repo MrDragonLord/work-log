@@ -7,7 +7,8 @@ import {
 } from '@heroicons/react/24/outline'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import * as m from '@/paraglide/messages.js'
+import { useLocale } from '@/shared/i18n'
 
 import {
 	type TimeEntry,
@@ -34,7 +35,9 @@ type TimeEntryActionsProps = {
 }
 
 export default function TimeEntryActions({ entry, size = 'icon-sm' }: TimeEntryActionsProps) {
-	const { t } = useTranslation()
+	'use no memo'
+
+	useLocale()
 	const queryClient = useQueryClient()
 	const [isDeleting, setDeleting] = useState(false)
 	const [isEditing, setEditing] = useState(false)
@@ -85,7 +88,7 @@ export default function TimeEntryActions({ entry, size = 'icon-sm' }: TimeEntryA
 			) : null}
 			{entry.runningSince !== null ? (
 				<Button
-					aria-label={t('runningTimers.stopNamed', { title: entry.title })}
+					aria-label={m.runningTimersStopNamed({ title: entry.title })}
 					disabled={stopMutation.isPending}
 					onClick={() => stopMutation.mutate(entry.id)}
 					size={size}
@@ -95,7 +98,7 @@ export default function TimeEntryActions({ entry, size = 'icon-sm' }: TimeEntryA
 				</Button>
 			) : (
 				<Button
-					aria-label={t('runningTimers.resumeNamed', { title: entry.title })}
+					aria-label={m.runningTimersResumeNamed({ title: entry.title })}
 					disabled={resumeMutation.isPending}
 					onClick={() => resumeMutation.mutate(entry.id)}
 					size={size}
@@ -106,18 +109,22 @@ export default function TimeEntryActions({ entry, size = 'icon-sm' }: TimeEntryA
 			)}
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
-					<Button aria-label={t('actions.openMenu')} size={size} variant="ghost">
+					<Button
+						aria-label={m.actionsOpenMenu()}
+						size={size}
+						variant="ghost"
+					>
 						<EllipsisHorizontalIcon aria-hidden="true" />
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end">
 					<DropdownMenuItem onSelect={() => setEditing(true)}>
 						<PencilSquareIcon aria-hidden="true" />
-						{t('actions.edit')}
+						{m.actionsEdit()}
 					</DropdownMenuItem>
 					<DropdownMenuItem onSelect={() => setDeleting(true)} variant="destructive">
 						<TrashIcon aria-hidden="true" />
-						{t('actions.delete')}
+						{m.actionsDelete()}
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>

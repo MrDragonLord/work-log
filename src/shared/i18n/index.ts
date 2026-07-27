@@ -1,9 +1,11 @@
 export {
 	changeLocale,
-	I18N,
-	initializeI18n,
+	getActiveLocale,
+	initializeLocale,
 	normalizeLocale,
 	resolveInitialLocale,
+	subscribeToLocaleChanges,
 	SUPPORTED_LOCALES,
 	type Locale,
 } from './i18n'
+export { useLocale } from './use-locale'

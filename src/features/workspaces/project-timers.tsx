@@ -3,7 +3,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { format } from 'date-fns'
 import { enUS, ru } from 'date-fns/locale'
 import { type FormEvent, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+
+import * as m from '@/paraglide/messages.js'
 
 import { TimeEntryActions, useNow } from '@/features/time-entry'
 import {
@@ -13,6 +14,7 @@ import {
 	listProjectTimeEntries,
 	startTimeEntry,
 } from '@/shared/api'
+import { useLocale } from '@/shared/i18n'
 import { combineLocalDateAndTime, formatDuration, toTimeInputValue } from '@/shared/lib'
 import {
 	Button,
@@ -31,7 +33,9 @@ type ProjectTimersProps = {
 }
 
 export default function ProjectTimers({ onBack, project, workspace }: ProjectTimersProps) {
-	const { i18n, t } = useTranslation()
+	'use no memo'
+
+	const locale = useLocale()
 	const queryClient = useQueryClient()
 	const [isCalendarOpen, setCalendarOpen] = useState(false)
 	const [hasCustomStart, setHasCustomStart] = useState(false)
@@ -47,9 +51,9 @@ export default function ProjectTimers({ onBack, project, workspace }: ProjectTim
 	const entries = entriesQuery.data ?? []
 	const now = useNow(entries.some((entry) => entry.runningSince !== null))
 	const currentDate = new Date()
-	const calendarLocale = (i18n.resolvedLanguage ?? i18n.language).startsWith('ru') ? ru : enUS
+	const calendarLocale = locale === 'ru' ? ru : enUS
 	const isToday = startDate.toDateString() === currentDate.toDateString()
-	const timeFormatter = new Intl.DateTimeFormat(i18n.resolvedLanguage ?? 'en', {
+	const timeFormatter = new Intl.DateTimeFormat(locale, {
 		dateStyle: 'medium',
 		timeStyle: 'short',
 	})
@@ -95,7 +99,7 @@ export default function ProjectTimers({ onBack, project, workspace }: ProjectTim
 		<section>
 			<Button onClick={onBack} variant="ghost">
 				<ArrowLeftIcon aria-hidden="true" data-icon="inline-start" />
-				{t('common.backToProjects')}
+				{m.commonBackToProjects()}
 			</Button>
 			<p className="mt-6 text-xs font-semibold tracking-[0.16em] text-primary uppercase">
 				{workspace.name}
@@ -116,12 +120,12 @@ export default function ProjectTimers({ onBack, project, workspace }: ProjectTim
 							<PlayIcon aria-hidden="true" className="size-5" />
 						</div>
 						<div>
-							<h2 className="font-heading text-base font-semibold">{t('timerForm.title')}</h2>
-							<p className="text-xs text-muted-foreground">{t('timerForm.parallelHint')}</p>
+							<h2 className="font-heading text-base font-semibold">{m.timerFormTitle()}</h2>
+							<p className="text-xs text-muted-foreground">{m.timerFormParallelHint()}</p>
 						</div>
 					</div>
 					<label className="mt-5 block text-sm font-medium" htmlFor="timer-title">
-						{t('timerForm.name')}
+						{m.timerFormName()}
 					</label>
 					<Input
 						className="mt-2"
@@ -132,7 +136,7 @@ export default function ProjectTimers({ onBack, project, workspace }: ProjectTim
 						value={title}
 					/>
 					<label className="mt-4 block text-sm font-medium" htmlFor="timer-description">
-						{t('timerForm.description')}
+						{m.timerFormDescription()}
 					</label>
 					<Textarea
 						className="mt-2"
@@ -143,7 +147,7 @@ export default function ProjectTimers({ onBack, project, workspace }: ProjectTim
 					/>
 					<div className="mt-4 grid gap-3 sm:grid-cols-[minmax(0,1fr)_7.5rem]">
 						<div>
-							<p className="text-sm font-medium">{t('timerForm.date')}</p>
+							<p className="text-sm font-medium">{m.timerFormDate()}</p>
 							<Popover onOpenChange={setCalendarOpen} open={isCalendarOpen}>
 								<PopoverTrigger asChild>
 									<Button
@@ -176,11 +180,11 @@ export default function ProjectTimers({ onBack, project, workspace }: ProjectTim
 						</div>
 						<div>
 							<label className="block text-sm font-medium" htmlFor="timer-start-time">
-								{t('timerForm.time')}
+								{m.timerFormTime()}
 							</label>
 							<Input
 								aria-invalid={isStartInvalid || undefined}
-								className="mt-2"
+								className="mt-2 appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
 								id="timer-start-time"
 								max={isToday ? toTimeInputValue(currentDate) : undefined}
 								onChange={(event) => {
@@ -190,37 +194,38 @@ export default function ProjectTimers({ onBack, project, workspace }: ProjectTim
 								}}
 								required
 								type="time"
+								step="1"
 								value={startTime}
 							/>
 						</div>
 					</div>
 					{isStartInvalid || startMutation.isError ? (
 						<p className="mt-3 text-sm text-destructive" role="alert">
-							{isStartInvalid ? t('timerForm.futureStart') : t('common.checkFields')}
+							{isStartInvalid ? m.timerFormFutureStart() : m.commonCheckFields()}
 						</p>
 					) : null}
 					<Button className="mt-5 w-full" disabled={startMutation.isPending} type="submit">
 						<PlayIcon aria-hidden="true" data-icon="inline-start" />
-						{startMutation.isPending ? t('common.saving') : t('timerForm.submit')}
+						{startMutation.isPending ? m.commonSaving() : m.timerFormSubmit()}
 					</Button>
 				</form>
 
 				<div className="overflow-hidden rounded-2xl border bg-card">
 					<div className="flex items-center gap-3 border-b px-5 py-4">
 						<ClockIcon aria-hidden="true" className="size-4 text-primary" />
-						<h2 className="font-heading text-sm font-semibold">{t('projectEntries.title')}</h2>
+						<h2 className="font-heading text-sm font-semibold">{m.projectEntriesTitle()}</h2>
 					</div>
 					{entriesQuery.isPending ? (
-						<p className="px-5 py-8 text-sm text-muted-foreground">{t('common.loading')}</p>
+						<p className="px-5 py-8 text-sm text-muted-foreground">{m.commonLoading()}</p>
 					) : null}
 					{entriesQuery.isError ? (
 						<p className="px-5 py-8 text-sm text-destructive" role="alert">
-							{t('common.error')}
+							{m.commonError()}
 						</p>
 					) : null}
 					{entriesQuery.isSuccess && entries.length === 0 ? (
 						<p className="px-5 py-12 text-center text-sm text-muted-foreground">
-							{t('projectEntries.empty')}
+							{m.projectEntriesEmpty()}
 						</p>
 					) : null}
 					{entries.length > 0 ? (

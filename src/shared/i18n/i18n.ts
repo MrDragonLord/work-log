@@ -1,15 +1,23 @@
-import { type i18n as I18nInstance, createInstance } from 'i18next'
-import { initReactI18next } from 'react-i18next'
+import {
+	type Locale,
+	defineCustomClientStrategy,
+	getLocale,
+	locales,
+	setLocale,
+} from '@/paraglide/runtime.js'
 
 import { readPreference, writePreference } from '@/shared/lib'
-import { EN, RU } from '@/shared/i18n/resources'
 
-export const SUPPORTED_LOCALES = ['en', 'ru'] as const
-
-export type Locale = (typeof SUPPORTED_LOCALES)[number]
+export const SUPPORTED_LOCALES = locales
 
 const LOCALE_PREFERENCE = 'locale'
 const FALLBACK_LOCALE: Locale = 'en'
+const WORKLOG_LOCALE_STRATEGY = 'custom-worklogPreference'
+
+let isLocaleStrategyInitialized = false
+let activeLocale: Locale | null = null
+
+const localeListeners = new Set<() => void>()
 
 function getPreferredLanguages(): readonly string[] {
 	if (typeof navigator === 'undefined') {
@@ -56,32 +64,56 @@ export function resolveInitialLocale(options: LocaleResolutionOptions = {}): Loc
 	return FALLBACK_LOCALE
 }
 
-export const I18N: I18nInstance = createInstance()
-const REGISTER_I18N_PLUGIN = I18N.use.bind(I18N)
-
 function applyDocumentLocale(locale: Locale): void {
 	document.documentElement.lang = locale
 }
 
-export async function initializeI18n(): Promise<void> {
-	if (!I18N.isInitialized) {
-		await REGISTER_I18N_PLUGIN(initReactI18next).init({
-			fallbackLng: FALLBACK_LOCALE,
-			interpolation: { escapeValue: false },
-			lng: resolveInitialLocale(),
-			resources: {
-				en: { translation: EN },
-				ru: { translation: RU },
+export function initializeLocale(): Locale {
+	if (!isLocaleStrategyInitialized) {
+		defineCustomClientStrategy(WORKLOG_LOCALE_STRATEGY, {
+			getLocale: () => activeLocale ?? resolveInitialLocale(),
+			setLocale: (locale) => {
+				const selectedLocale = normalizeLocale(locale)
+
+				if (selectedLocale !== null) {
+					activeLocale = selectedLocale
+					writePreference(LOCALE_PREFERENCE, selectedLocale)
+				}
 			},
-			supportedLngs: SUPPORTED_LOCALES,
 		})
+		isLocaleStrategyInitialized = true
 	}
 
-	applyDocumentLocale(normalizeLocale(I18N.resolvedLanguage) ?? FALLBACK_LOCALE)
+	const locale = getLocale()
+	activeLocale = locale
+	applyDocumentLocale(locale)
+
+	return locale
+}
+
+export function getActiveLocale(): Locale {
+	return activeLocale ?? initializeLocale()
+}
+
+export function subscribeToLocaleChanges(listener: () => void): () => void {
+	localeListeners.add(listener)
+
+	return () => {
+		localeListeners.delete(listener)
+	}
+}
+
+function notifyLocaleChange(): void {
+	for (const listener of localeListeners) {
+		listener()
+	}
 }
 
 export async function changeLocale(locale: Locale): Promise<void> {
-	await I18N.changeLanguage(locale)
-	writePreference(LOCALE_PREFERENCE, locale)
+	initializeLocale()
+	await setLocale(locale, { reload: false })
 	applyDocumentLocale(locale)
+	notifyLocaleChange()
 }
+
+export type { Locale }

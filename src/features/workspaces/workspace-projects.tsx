@@ -9,7 +9,8 @@ import {
 } from '@heroicons/react/24/outline'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { type FormEvent, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import * as m from '@/paraglide/messages.js'
+import { useLocale } from '@/shared/i18n'
 
 import {
 	type Project,
@@ -76,12 +77,13 @@ function ProjectFormFields({
 	onDescriptionChange,
 	onNameChange,
 }: ProjectFormFieldsProps) {
-	const { t } = useTranslation()
+	'use no memo'
 
+	useLocale()
 	return (
 		<div className={className}>
 			<label className="block text-sm font-medium" htmlFor={nameId}>
-				{t('projectForm.name')}
+				{m.projectFormName()}
 			</label>
 			<Input
 				className="mt-2"
@@ -92,7 +94,7 @@ function ProjectFormFields({
 				value={name}
 			/>
 			<label className="mt-4 block text-sm font-medium" htmlFor={descriptionId}>
-				{t('projectForm.description')}
+				{m.projectFormDescription()}
 			</label>
 			<Textarea
 				className="mt-2"
@@ -106,7 +108,9 @@ function ProjectFormFields({
 }
 
 function ProjectEditorDialog({ isSaving, onClose, onSave, project }: ProjectEditorDialogProps) {
-	const { t } = useTranslation()
+	'use no memo'
+
+	useLocale()
 	const [description, setDescription] = useState(project.description ?? '')
 	const [name, setName] = useState(project.name)
 
@@ -117,9 +121,9 @@ function ProjectEditorDialog({ isSaving, onClose, onSave, project }: ProjectEdit
 
 	return (
 		<Dialog onOpenChange={(isOpen) => !isOpen && onClose()} open>
-			<DialogContent closeLabel={t('common.close')}>
+			<DialogContent closeLabel={m.commonClose()}>
 				<DialogHeader>
-					<DialogTitle>{t('actions.editProject')}</DialogTitle>
+					<DialogTitle>{m.actionsEditProject()}</DialogTitle>
 				</DialogHeader>
 				<form onSubmit={handleSubmit}>
 					<ProjectFormFields
@@ -132,10 +136,12 @@ function ProjectEditorDialog({ isSaving, onClose, onSave, project }: ProjectEdit
 					/>
 					<DialogFooter className="mt-5">
 						<Button onClick={onClose} type="button" variant="outline">
-							{t('actions.cancel')}
+							{m.actionsCancel()}
 						</Button>
 						<Button disabled={isSaving} type="submit">
-							{isSaving ? t('common.saving') : t('actions.save')}
+							{isSaving
+								? m.commonSaving()
+								: m.actionsSave()}
 						</Button>
 					</DialogFooter>
 				</form>
@@ -157,21 +163,26 @@ function DeleteProjectDialog({
 	onConfirm,
 	project,
 }: DeleteProjectDialogProps) {
-	const { t } = useTranslation()
+	'use no memo'
 
+	useLocale()
 	return (
 		<AlertDialog onOpenChange={(isOpen) => !isOpen && !isDeleting && onCancel()} open>
 			<AlertDialogContent>
 				<AlertDialogHeader>
-					<AlertDialogTitle>{t('actions.deleteProject')}</AlertDialogTitle>
+					<AlertDialogTitle>
+						{m.actionsDeleteProject()}
+					</AlertDialogTitle>
 					<AlertDialogDescription>
-						{t('actions.deleteProjectDescription', { name: project.name })}
+						{m.actionsDeleteProjectDescription({ name: project.name })}
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
-					<AlertDialogCancel>{t('actions.cancel')}</AlertDialogCancel>
+					<AlertDialogCancel>{m.actionsCancel()}</AlertDialogCancel>
 					<AlertDialogAction disabled={isDeleting} onClick={onConfirm}>
-						{isDeleting ? t('common.saving') : t('actions.delete')}
+						{isDeleting
+							? m.commonSaving()
+							: m.actionsDelete()}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>
@@ -180,7 +191,9 @@ function DeleteProjectDialog({
 }
 
 export default function WorkspaceProjects({ onBack, onOpen, workspace }: WorkspaceProjectsProps) {
-	const { t } = useTranslation()
+	'use no memo'
+
+	useLocale()
 	const queryClient = useQueryClient()
 	const [description, setDescription] = useState('')
 	const [deletingProject, setDeletingProject] = useState<Project | null>(null)
@@ -253,26 +266,28 @@ export default function WorkspaceProjects({ onBack, onOpen, workspace }: Workspa
 			) : null}
 			<Button onClick={onBack} variant="ghost">
 				<ArrowLeftIcon aria-hidden="true" data-icon="inline-start" />
-				{t('common.backToWorkspaces')}
+				{m.commonBackToWorkspaces()}
 			</Button>
 			<p className="mt-6 text-xs font-semibold tracking-[0.16em] text-primary uppercase">
-				{t('screens.projects.eyebrow')}
+				{m.screensProjectsEyebrow()}
 			</p>
 			<h1 className="mt-3 font-heading text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
 				{workspace.name}
 			</h1>
 			<p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-				{t('screens.projects.description')}
+				{m.screensProjectsDescription()}
 			</p>
 
 			<div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
 				<div>
 					{projectsQuery.isPending ? (
-						<p className="text-sm text-muted-foreground">{t('common.loading')}</p>
+						<p className="text-sm text-muted-foreground">
+							{m.commonLoading()}
+						</p>
 					) : null}
 					{projectsQuery.isError ? (
 						<p className="text-sm text-destructive" role="alert">
-							{t('common.error')}
+							{m.commonError()}
 						</p>
 					) : null}
 					{projectsQuery.data?.length === 0 ? (
@@ -282,7 +297,7 @@ export default function WorkspaceProjects({ onBack, onOpen, workspace }: Workspa
 									<FolderIcon aria-hidden="true" className="size-5" />
 								</div>
 								<h2 className="mt-4 font-heading text-base font-semibold">
-									{t('screens.projects.emptyTitle')}
+									{m.screensProjectsEmptyTitle()}
 								</h2>
 							</div>
 						</div>
@@ -315,7 +330,7 @@ export default function WorkspaceProjects({ onBack, onOpen, workspace }: Workspa
 									<DropdownMenu>
 										<DropdownMenuTrigger asChild>
 											<Button
-												aria-label={t('actions.openMenu')}
+												aria-label={m.actionsOpenMenu()}
 												className="absolute top-3 right-3"
 												size="icon-sm"
 												variant="ghost"
@@ -326,14 +341,14 @@ export default function WorkspaceProjects({ onBack, onOpen, workspace }: Workspa
 										<DropdownMenuContent align="end">
 											<DropdownMenuItem onSelect={() => setEditingProject(project)}>
 												<PencilSquareIcon aria-hidden="true" />
-												{t('actions.edit')}
+												{m.actionsEdit()}
 											</DropdownMenuItem>
 											<DropdownMenuItem
 												onSelect={() => setDeletingProject(project)}
 												variant="destructive"
 											>
 												<TrashIcon aria-hidden="true" />
-												{t('actions.delete')}
+												{m.actionsDelete()}
 											</DropdownMenuItem>
 										</DropdownMenuContent>
 									</DropdownMenu>
@@ -344,7 +359,9 @@ export default function WorkspaceProjects({ onBack, onOpen, workspace }: Workspa
 				</div>
 
 				<form className="h-fit rounded-2xl border bg-card p-5" onSubmit={handleSubmit}>
-					<h2 className="font-heading text-base font-semibold">{t('projectForm.title')}</h2>
+					<h2 className="font-heading text-base font-semibold">
+						{m.projectFormTitle()}
+					</h2>
 					<ProjectFormFields
 						className="mt-5"
 						description={description}
@@ -356,12 +373,14 @@ export default function WorkspaceProjects({ onBack, onOpen, workspace }: Workspa
 					/>
 					{createMutation.isError ? (
 						<p className="mt-3 text-sm text-destructive" role="alert">
-							{t('common.checkFields')}
+							{m.commonCheckFields()}
 						</p>
 					) : null}
 					<Button className="mt-4 w-full" disabled={createMutation.isPending} type="submit">
 						<PlusIcon aria-hidden="true" data-icon="inline-start" />
-						{createMutation.isPending ? t('common.saving') : t('projectForm.submit')}
+						{createMutation.isPending
+							? m.commonSaving()
+							: m.projectFormSubmit()}
 					</Button>
 				</form>
 			</div>

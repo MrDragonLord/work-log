@@ -3,11 +3,11 @@ import { createRoot } from 'react-dom/client'
 
 import { App, AppProviders } from '@/app'
 import { applyTheme, resolveInitialTheme } from '@/features/preferences/theme'
-import { initializeI18n } from '@/shared/i18n'
+import { initializeLocale } from '@/shared/i18n'
 
 import '@/index.css'
 
-async function bootstrap(): Promise<void> {
+function bootstrap(): void {
 	const rootElement = document.getElementById('root')
 
 	if (rootElement === null) {
@@ -15,7 +15,7 @@ async function bootstrap(): Promise<void> {
 	}
 
 	applyTheme(resolveInitialTheme())
-	await initializeI18n()
+	initializeLocale()
 
 	createRoot(rootElement).render(
 		<StrictMode>
@@ -26,6 +26,8 @@ async function bootstrap(): Promise<void> {
 	)
 }
 
-bootstrap().catch((error: unknown) => {
+try {
+	bootstrap()
+} catch (error: unknown) {
 	console.error('Failed to start WorkLog', error)
-})
+}

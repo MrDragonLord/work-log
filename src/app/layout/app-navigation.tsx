@@ -1,15 +1,11 @@
 import { BuildingOffice2Icon, Squares2X2Icon } from '@heroicons/react/24/outline'
-import { useTranslation } from 'react-i18next'
+import * as m from '@/paraglide/messages.js'
+import { useLocale } from '@/shared/i18n'
 
 import { WorklogIcon } from '@/shared/assets'
 import { cn } from '@/shared/lib'
 
 export type AppSection = 'overview' | 'workspaces'
-
-const NAVIGATION_ITEMS = [
-	{ icon: Squares2X2Icon, id: 'overview', labelKey: 'navigation.overview' },
-	{ icon: BuildingOffice2Icon, id: 'workspaces', labelKey: 'navigation.workspaces' },
-] as const
 
 const NAVIGATION_ITEM_CLASS =
 	'group flex h-10 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
@@ -20,7 +16,9 @@ type AppNavigationProps = {
 }
 
 export function Brand() {
-	const { t } = useTranslation()
+	'use no memo'
+
+	useLocale()
 
 	return (
 		<div className="flex min-w-0 items-center gap-3">
@@ -34,20 +32,36 @@ export function Brand() {
 			/>
 			<div className="min-w-0">
 				<p className="truncate font-heading text-base font-semibold tracking-[-0.02em]">
-					{t('app.name')}
+					{m.appName()}
 				</p>
-				<p className="truncate text-xs text-muted-foreground">{t('app.tagline')}</p>
+				<p className="truncate text-xs text-muted-foreground">
+					{m.appTagline()}
+				</p>
 			</div>
 		</div>
 	)
 }
 
 export default function AppNavigation({ activeSection, onNavigate }: AppNavigationProps) {
-	const { t } = useTranslation()
+	'use no memo'
+
+	useLocale()
+	const navigationItems = [
+		{
+			icon: Squares2X2Icon,
+			id: 'overview' as const,
+			label: m.navigationOverview(),
+		},
+		{
+			icon: BuildingOffice2Icon,
+			id: 'workspaces' as const,
+			label: m.navigationWorkspaces(),
+		},
+	]
 
 	return (
-		<nav aria-label={t('navigation.label')} className="flex flex-col gap-1">
-			{NAVIGATION_ITEMS.map(({ icon: Icon, id, labelKey }) => {
+		<nav aria-label={m.navigationLabel()} className="flex flex-col gap-1">
+			{navigationItems.map(({ icon: Icon, id, label }) => {
 				const isActive = activeSection === id
 
 				return (
@@ -64,7 +78,7 @@ export default function AppNavigation({ activeSection, onNavigate }: AppNavigati
 						type="button"
 					>
 						<Icon aria-hidden="true" className="size-4.5" />
-						<span>{t(labelKey)}</span>
+						<span>{label}</span>
 					</button>
 				)
 			})}

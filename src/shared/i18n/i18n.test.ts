@@ -1,6 +1,15 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
-import { normalizeLocale, resolveInitialLocale } from '@/shared/i18n'
+import * as m from '@/paraglide/messages.js'
+
+import {
+	changeLocale,
+	getActiveLocale,
+	initializeLocale,
+	normalizeLocale,
+	resolveInitialLocale,
+	subscribeToLocaleChanges,
+} from '@/shared/i18n'
 
 describe('normalizeLocale', () => {
 	it('normalizes supported regional locales', () => {
@@ -27,5 +36,40 @@ describe('resolveInitialLocale', () => {
 
 	it('falls back to English', () => {
 		expect(resolveInitialLocale({ preferredLanguages: ['de-DE'], storedLocale: null })).toBe('en')
+	})
+})
+
+describe('compiled messages', () => {
+	it('uses the active locale in Paraglide and the document', async () => {
+		await changeLocale('ru')
+
+		expect(initializeLocale()).toBe('ru')
+		expect(document.documentElement.lang).toBe('ru')
+		expect(m.appTagline()).toBe('Учёт времени')
+	})
+
+	it('updates direct message calls without reloading the page', async () => {
+		const onLocaleChange = vi.fn()
+		const unsubscribe = subscribeToLocaleChanges(onLocaleChange)
+
+		await changeLocale('en')
+
+		expect(getActiveLocale()).toBe('en')
+		expect(document.documentElement.lang).toBe('en')
+		expect(m.appTagline()).toBe('Time tracking')
+		expect(onLocaleChange).toHaveBeenCalledOnce()
+
+		unsubscribe()
+	})
+
+	it('selects English plural forms', () => {
+		expect(m.runningTimersCount({ count: 1 }, { locale: 'en' })).toBe('1 active timer')
+		expect(m.runningTimersCount({ count: 2 }, { locale: 'en' })).toBe('2 active timers')
+	})
+
+	it('selects Russian plural forms', () => {
+		expect(m.runningTimersCount({ count: 1 }, { locale: 'ru' })).toBe('1 активный таймер')
+		expect(m.runningTimersCount({ count: 2 }, { locale: 'ru' })).toBe('2 активных таймера')
+		expect(m.runningTimersCount({ count: 5 }, { locale: 'ru' })).toBe('5 активных таймеров')
 	})
 })

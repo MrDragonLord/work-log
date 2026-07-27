@@ -1,9 +1,10 @@
 import { CheckIcon, LanguageIcon } from '@heroicons/react/24/outline'
 import { useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
+
+import * as m from '@/paraglide/messages.js'
 
 import { setTrayLocale } from '@/shared/api'
-import { type Locale, changeLocale, normalizeLocale } from '@/shared/i18n'
+import { type Locale, changeLocale, useLocale } from '@/shared/i18n'
 import {
 	Button,
 	DropdownMenu,
@@ -14,14 +15,14 @@ import {
 	DropdownMenuTrigger,
 } from '@/shared/ui'
 
-const LOCALE_OPTIONS: ReadonlyArray<{ labelKey: string; locale: Locale }> = [
-	{ labelKey: 'preferences.language.english', locale: 'en' },
-	{ labelKey: 'preferences.language.russian', locale: 'ru' },
-]
-
 export default function LanguageMenu() {
-	const { i18n, t } = useTranslation()
-	const activeLocale = normalizeLocale(i18n.resolvedLanguage) ?? 'en'
+	'use no memo'
+
+	const activeLocale = useLocale()
+	const localeOptions: ReadonlyArray<{ label: string; locale: Locale }> = [
+		{ label: m.preferencesLanguageEnglish(), locale: 'en' },
+		{ label: m.preferencesLanguageRussian(), locale: 'ru' },
+	]
 
 	useEffect(() => {
 		setTrayLocale(activeLocale).catch((error: unknown) => {
@@ -39,7 +40,7 @@ export default function LanguageMenu() {
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button
-					aria-label={t('preferences.language.label')}
+					aria-label={m.preferencesLanguageLabel()}
 					className="gap-2 px-2.5 font-mono uppercase"
 					variant="ghost"
 				>
@@ -48,15 +49,17 @@ export default function LanguageMenu() {
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end" className="min-w-44">
-				<DropdownMenuLabel>{t('preferences.language.label')}</DropdownMenuLabel>
+				<DropdownMenuLabel>
+					{m.preferencesLanguageLabel()}
+				</DropdownMenuLabel>
 				<DropdownMenuSeparator />
-				{LOCALE_OPTIONS.map(({ labelKey, locale }) => (
+				{localeOptions.map(({ label, locale }) => (
 					<DropdownMenuItem key={locale} onSelect={() => handleLocaleChange(locale)}>
 						<CheckIcon
 							aria-hidden="true"
 							className={activeLocale === locale ? 'opacity-100' : 'opacity-0'}
 						/>
-						{t(labelKey)}
+						{label}
 					</DropdownMenuItem>
 				))}
 			</DropdownMenuContent>

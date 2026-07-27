@@ -8,7 +8,8 @@ import {
 } from '@heroicons/react/24/outline'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { type FormEvent, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import * as m from '@/paraglide/messages.js'
+import { useLocale } from '@/shared/i18n'
 
 import {
 	WORKLOG_QUERY_KEYS,
@@ -57,7 +58,9 @@ function WorkspaceEditorDialog({
 	onSave,
 	workspace,
 }: WorkspaceEditorDialogProps) {
-	const { t } = useTranslation()
+	'use no memo'
+
+	useLocale()
 	const [name, setName] = useState(workspace.name)
 
 	function handleSubmit(event: FormEvent<HTMLFormElement>): void {
@@ -67,13 +70,13 @@ function WorkspaceEditorDialog({
 
 	return (
 		<Dialog onOpenChange={(isOpen) => !isOpen && onClose()} open>
-			<DialogContent closeLabel={t('common.close')}>
+			<DialogContent closeLabel={m.commonClose()}>
 				<DialogHeader>
-					<DialogTitle>{t('actions.editWorkspace')}</DialogTitle>
+					<DialogTitle>{m.actionsEditWorkspace()}</DialogTitle>
 				</DialogHeader>
 				<form onSubmit={handleSubmit}>
 					<label className="block text-sm font-medium" htmlFor="edit-workspace-name">
-						{t('workspaceForm.name')}
+						{m.workspaceFormName()}
 					</label>
 					<Input
 						className="mt-2"
@@ -85,10 +88,12 @@ function WorkspaceEditorDialog({
 					/>
 					<DialogFooter className="mt-5">
 						<Button onClick={onClose} type="button" variant="outline">
-							{t('actions.cancel')}
+							{m.actionsCancel()}
 						</Button>
 						<Button disabled={isSaving} type="submit">
-							{isSaving ? t('common.saving') : t('actions.save')}
+							{isSaving
+								? m.commonSaving()
+								: m.actionsSave()}
 						</Button>
 					</DialogFooter>
 				</form>
@@ -110,21 +115,26 @@ function DeleteWorkspaceDialog({
 	onConfirm,
 	workspace,
 }: DeleteWorkspaceDialogProps) {
-	const { t } = useTranslation()
+	'use no memo'
 
+	useLocale()
 	return (
 		<AlertDialog onOpenChange={(isOpen) => !isOpen && !isDeleting && onCancel()} open>
 			<AlertDialogContent>
 				<AlertDialogHeader>
-					<AlertDialogTitle>{t('actions.deleteWorkspace')}</AlertDialogTitle>
+					<AlertDialogTitle>
+						{m.actionsDeleteWorkspace()}
+					</AlertDialogTitle>
 					<AlertDialogDescription>
-						{t('actions.deleteWorkspaceDescription', { name: workspace.name })}
+						{m.actionsDeleteWorkspaceDescription({ name: workspace.name })}
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
-					<AlertDialogCancel>{t('actions.cancel')}</AlertDialogCancel>
+					<AlertDialogCancel>{m.actionsCancel()}</AlertDialogCancel>
 					<AlertDialogAction disabled={isDeleting} onClick={onConfirm}>
-						{isDeleting ? t('common.saving') : t('actions.delete')}
+						{isDeleting
+							? m.commonSaving()
+							: m.actionsDelete()}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>
@@ -133,7 +143,9 @@ function DeleteWorkspaceDialog({
 }
 
 export default function WorkspaceList({ onOpen }: WorkspaceListProps) {
-	const { t } = useTranslation()
+	'use no memo'
+
+	useLocale()
 	const queryClient = useQueryClient()
 	const [name, setName] = useState('')
 	const [deletingWorkspace, setDeletingWorkspace] = useState<Workspace | null>(null)
@@ -200,24 +212,26 @@ export default function WorkspaceList({ onOpen }: WorkspaceListProps) {
 			) : null}
 			<div className="max-w-2xl">
 				<p className="text-xs font-semibold tracking-[0.16em] text-primary uppercase">
-					{t('screens.workspaces.eyebrow')}
+					{m.screensWorkspacesEyebrow()}
 				</p>
 				<h1 className="mt-3 font-heading text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
-					{t('screens.workspaces.title')}
+					{m.screensWorkspacesTitle()}
 				</h1>
 				<p className="mt-3 text-sm leading-6 text-muted-foreground sm:text-base">
-					{t('screens.workspaces.description')}
+					{m.screensWorkspacesDescription()}
 				</p>
 			</div>
 
 			<div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
 				<div>
 					{workspacesQuery.isPending ? (
-						<p className="text-sm text-muted-foreground">{t('common.loading')}</p>
+						<p className="text-sm text-muted-foreground">
+							{m.commonLoading()}
+						</p>
 					) : null}
 					{workspacesQuery.isError ? (
 						<p className="text-sm text-destructive" role="alert">
-							{t('common.error')}
+							{m.commonError()}
 						</p>
 					) : null}
 					{workspacesQuery.data?.length === 0 ? (
@@ -227,10 +241,10 @@ export default function WorkspaceList({ onOpen }: WorkspaceListProps) {
 									<BuildingOffice2Icon aria-hidden="true" className="size-5" />
 								</div>
 								<h2 className="mt-4 font-heading text-base font-semibold">
-									{t('screens.workspaces.emptyTitle')}
+									{m.screensWorkspacesEmptyTitle()}
 								</h2>
 								<p className="mt-1.5 text-sm text-muted-foreground">
-									{t('screens.workspaces.emptyDescription')}
+									{m.screensWorkspacesEmptyDescription()}
 								</p>
 							</div>
 						</div>
@@ -261,7 +275,7 @@ export default function WorkspaceList({ onOpen }: WorkspaceListProps) {
 									<DropdownMenu>
 										<DropdownMenuTrigger asChild>
 											<Button
-												aria-label={t('actions.openMenu')}
+												aria-label={m.actionsOpenMenu()}
 												className="absolute top-3 right-3"
 												size="icon-sm"
 												variant="ghost"
@@ -272,14 +286,14 @@ export default function WorkspaceList({ onOpen }: WorkspaceListProps) {
 										<DropdownMenuContent align="end">
 											<DropdownMenuItem onSelect={() => setEditingWorkspace(workspace)}>
 												<PencilSquareIcon aria-hidden="true" />
-												{t('actions.edit')}
+												{m.actionsEdit()}
 											</DropdownMenuItem>
 											<DropdownMenuItem
 												onSelect={() => setDeletingWorkspace(workspace)}
 												variant="destructive"
 											>
 												<TrashIcon aria-hidden="true" />
-												{t('actions.delete')}
+												{m.actionsDelete()}
 											</DropdownMenuItem>
 										</DropdownMenuContent>
 									</DropdownMenu>
@@ -290,12 +304,14 @@ export default function WorkspaceList({ onOpen }: WorkspaceListProps) {
 				</div>
 
 				<form className="h-fit rounded-2xl border bg-card p-5" onSubmit={handleSubmit}>
-					<h2 className="font-heading text-base font-semibold">{t('workspaceForm.title')}</h2>
+					<h2 className="font-heading text-base font-semibold">
+						{m.workspaceFormTitle()}
+					</h2>
 					<p className="mt-1 text-sm leading-6 text-muted-foreground">
-						{t('workspaceForm.description')}
+						{m.workspaceFormDescription()}
 					</p>
 					<label className="mt-5 block text-sm font-medium" htmlFor="workspace-name">
-						{t('workspaceForm.name')}
+						{m.workspaceFormName()}
 					</label>
 					<Input
 						autoComplete="off"
@@ -303,18 +319,20 @@ export default function WorkspaceList({ onOpen }: WorkspaceListProps) {
 						id="workspace-name"
 						maxLength={120}
 						onChange={(event) => setName(event.target.value)}
-						placeholder={t('workspaceForm.namePlaceholder')}
+						placeholder={m.workspaceFormNamePlaceholder()}
 						required
 						value={name}
 					/>
 					{createMutation.isError ? (
 						<p className="mt-3 text-sm text-destructive" role="alert">
-							{t('common.checkFields')}
+							{m.commonCheckFields()}
 						</p>
 					) : null}
 					<Button className="mt-4 w-full" disabled={createMutation.isPending} type="submit">
 						<PlusIcon aria-hidden="true" data-icon="inline-start" />
-						{createMutation.isPending ? t('common.saving') : t('workspaceForm.submit')}
+						{createMutation.isPending
+							? m.commonSaving()
+							: m.workspaceFormSubmit()}
 					</Button>
 				</form>
 			</div>
